@@ -31,8 +31,28 @@ def set_table_borders(table, color="CCCCCC", sz="4", val="single"):
         )
         tblPr[0].append(borders)
 
+def add_image_with_caption(doc, img_path, caption_text, width=Inches(5.8)):
+    if os.path.exists(img_path):
+        p_img = doc.add_paragraph()
+        p_img.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        p_img.paragraph_format.space_before = Pt(8)
+        p_img.paragraph_format.space_after = Pt(3)
+        run_img = p_img.add_run()
+        run_img.add_picture(img_path, width=width)
+
+        p_cap = doc.add_paragraph()
+        p_cap.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        p_cap.paragraph_format.space_after = Pt(12)
+        r_cap = p_cap.add_run(caption_text)
+        r_cap.font.size = Pt(9.5)
+        r_cap.font.italic = True
+        r_cap.font.color.rgb = RGBColor(0x55, 0x55, 0x55)
+    else:
+        print(f"Warning: Image path not found: {img_path}")
+
 def build_midterm_document():
     doc = Document()
+    asset_dir = r"C:\Users\Maryeel\Desktop\Cloud\mid_term\asset"
     
     # Page Setup - Margins
     for section in doc.sections:
@@ -63,7 +83,8 @@ def build_midterm_document():
     p_sub = doc.add_paragraph()
     p_sub.alignment = WD_ALIGN_PARAGRAPH.CENTER
     run_sub = p_sub.add_run("Họ và tên: Nguyễn Hoàng Lực | Mã sinh viên: 23IT151 | Lớp: 23IT151\n"
-                            "Tiền tố mã sản phẩm: 151 | Thuế VAT động: (1 + 4)% = 5%")
+                            "Tiền tố mã sản phẩm: 151 | Thuế VAT động: (1 + 4)% = 5%\n"
+                            "Miền trực tuyến Cloud Render: https://mid-term-p7kw.onrender.com")
     run_sub.font.size = Pt(10.5)
     run_sub.font.italic = True
     run_sub.font.color.rgb = RGBColor(0x55, 0x55, 0x55)
@@ -147,6 +168,13 @@ def build_midterm_document():
 
     set_table_borders(table_user)
 
+    # Ảnh chứng minh Section 1
+    doc.add_paragraph().add_run("Hình ảnh minh họa khởi tạo CSDL và cấu hình phân quyền trên MongoDB Atlas:").bold = True
+    add_image_with_caption(doc, os.path.join(asset_dir, "Screenshot 2026-10-07 143731.png"), "Hình 1.1: Khởi tạo Cơ sở dữ liệu DB_23IT151 và Collection Book trên Cloud MongoDB Atlas", width=Inches(5.2))
+    add_image_with_caption(doc, os.path.join(asset_dir, "Screenshot 2026-10-07 143806.png"), "Hình 1.2: Cấu hình tài khoản Đọc (read_23IT151) với quyền read@DB_23IT151", width=Inches(5.5))
+    add_image_with_caption(doc, os.path.join(asset_dir, "Screenshot 2026-10-07 143910.png"), "Hình 1.3: Cấu hình tài khoản Đọc-Ghi (readwrite_23IT151) với quyền readWrite@DB_23IT151", width=Inches(5.5))
+    add_image_with_caption(doc, os.path.join(asset_dir, "Screenshot 2026-10-07 143923.png"), "Hình 1.4: Kiểm tra phân quyền truy cập đặc quyền tối thiểu (Least Privilege) trên MongoDB Atlas", width=Inches(5.5))
+
     # SECTION 2
     h2 = doc.add_paragraph()
     r_h2 = h2.add_run("2. Logic Backend & Kiến trúc Chuyên nghiệp MVC & Stateless (4.5 điểm)")
@@ -205,6 +233,15 @@ def build_midterm_document():
         "  Họ và tên: Nguyễn Hoàng Lực | MSSV: 23IT151 | Mức VAT áp dụng: 5%"
     )
 
+    # Ảnh chứng minh Section 2
+    doc.add_paragraph().add_run("Hình ảnh minh họa Giao diện Ứng dụng Web và các tính năng CRUD:").bold = True
+    add_image_with_caption(doc, os.path.join(asset_dir, "Screenshot 2026-10-07 151819.png"), "Hình 2.1: Giao diện ứng dụng Quản lý Sách Cloud (Bố cục 2 cột, 5% VAT, link ảnh bìa và thanh Session 1 dòng)", width=Inches(5.8))
+    add_image_with_caption(doc, os.path.join(asset_dir, "Screenshot 2026-10-07 151826.png"), "Hình 2.2: Thêm mới sách thành công qua luồng kết nối readwrite_23IT151", width=Inches(5.8))
+    add_image_with_caption(doc, os.path.join(asset_dir, "Screenshot 2026-10-07 151837.png"), "Hình 2.3: Hộp thoại Modal cập nhật thông tin sách (readwrite_23IT151)", width=Inches(5.8))
+    add_image_with_caption(doc, os.path.join(asset_dir, "Screenshot 2026-10-07 151843.png"), "Hình 2.4: Thông báo cập nhật thông tin sách thành công", width=Inches(5.8))
+    add_image_with_caption(doc, os.path.join(asset_dir, "Screenshot 2026-10-07 151855.png"), "Hình 2.5: Hộp thoại xác nhận xóa sách khỏi CSDL Cloud (readwrite_23IT151)", width=Inches(5.8))
+    add_image_with_caption(doc, os.path.join(asset_dir, "Screenshot 2026-10-07 151900.png"), "Hình 2.6: Thông báo xóa sách khỏi Cloud Database thành công", width=Inches(5.8))
+
     # SECTION 3
     h3 = doc.add_paragraph()
     r_h3 = h3.add_run("3. Quản lý mã nguồn & Kiểm soát quy trình DevOps (1.5 điểm)")
@@ -246,6 +283,9 @@ def build_midterm_document():
     r_gb.font.size = Pt(9.5)
     r_gb.font.color.rgb = RGBColor(0x00, 0x56, 0xB3)
 
+    # Ảnh chứng minh Section 3
+    add_image_with_caption(doc, os.path.join(asset_dir, "Screenshot 2026-10-07 150406.png"), "Hình 3.1: Ảnh chụp Terminal sơ đồ phân nhánh và gộp nhánh cây Git History (git log --graph --oneline --all)", width=Inches(5.8))
+
     # SECTION 4
     h4 = doc.add_paragraph()
     r_h4 = h4.add_run("4. Triển khai Hệ thống thực tế (Render PaaS) & Biến môi trường (1.5 điểm)")
@@ -265,6 +305,13 @@ def build_midterm_document():
         "• SESSION_SECRET = secret_cloud_23IT151_nguyenhoangluc"
     )
 
+    # Ảnh chứng minh Section 4
+    doc.add_paragraph().add_run("Hình ảnh minh họa triển khai thực tế trên Cloud PaaS Render:").bold = True
+    add_image_with_caption(doc, os.path.join(asset_dir, "Screenshot 2026-10-07 152309.png"), "Hình 4.1: Cấu hình các biến môi trường kết nối bảo mật trên trang quản trị Render Environment", width=Inches(5.8))
+    add_image_with_caption(doc, os.path.join(asset_dir, "Screenshot 2026-10-07 152245.png"), "Hình 4.2: Quá trình Build và Deploy tự động ứng dụng thành công trên Render PaaS", width=Inches(5.8))
+    add_image_with_caption(doc, os.path.join(asset_dir, "Screenshot 2026-10-07 152711.png"), "Hình 4.3: Quản lý lịch sử triển khai ứng dụng ở trạng thái Live 24/7 trên Render", width=Inches(5.8))
+    add_image_with_caption(doc, os.path.join(asset_dir, "Screenshot 2026-10-07 152617.png"), "Hình 4.4: Ứng dụng Web Quản lý Sách Cloud hoạt động trực tuyến thực tế tại https://mid-term-p7kw.onrender.com", width=Inches(5.8))
+
     # SECTION 5: CONCLUSION
     h5 = doc.add_paragraph()
     r_h5 = h5.add_run("5. Kết luận bài kiểm tra giữa kỳ")
@@ -283,7 +330,7 @@ def build_midterm_document():
 
     output_path = r"C:\Users\Maryeel\Desktop\Cloud\mid_term\Bao_Cao_Giua_Ki_Cloud_NguyenHoangLuc_23IT151_MVC.docx"
     doc.save(output_path)
-    print(f"Successfully generated Midterm Word document at: {output_path}")
+    print(f"Successfully generated Midterm Word document with ALL screenshots at: {output_path}")
 
 if __name__ == "__main__":
     build_midterm_document()
