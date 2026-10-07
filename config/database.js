@@ -5,7 +5,7 @@ const MONGODB_READ_URI = process.env.MONGODB_READ_URI;
 const MONGODB_READWRITE_URI = process.env.MONGODB_READWRITE_URI;
 
 if (!MONGODB_READ_URI || !MONGODB_READWRITE_URI) {
-  console.error('🔴 LOI: Thieu bien moi truong MONGODB_READ_URI hoac MONGODB_READWRITE_URI trong file .env');
+  console.error('🔴 LOI: Thieu bien moi truong MONGODB_READ_URI hoac MONGODB_READWRITE_URI. Vui long cau hinh trong Render Environment Variables!');
   process.exit(1);
 }
 
