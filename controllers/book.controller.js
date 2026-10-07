@@ -76,3 +76,48 @@ exports.createBook = async (req, res) => {
     res.redirect(`/?error=${encodeURIComponent(errorMsg)}`);
   }
 };
+
+// [POST] /update-book/:id - Cap nhat thong tin sach (Routing den Write Connection: readwrite_23IT151)
+exports.updateBook = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { title, author, price, imageUrl } = req.body;
+
+    const numPrice = parseFloat(price);
+    if (isNaN(numPrice) || numPrice < 0) {
+      return res.redirect(`/?error=${encodeURIComponent('Gia goc phai la mot so duong hop le!')}`);
+    }
+
+    const finalPrice = Math.round(numPrice * (1 + VAT_RATE) * 100) / 100;
+
+    // DIEU HUONG WRITE: Su dung BookWriteModel (readwrite_23IT151)
+    await BookWriteModel.findByIdAndUpdate(id, {
+      title: title.trim(),
+      author: author.trim(),
+      price: numPrice,
+      imageUrl: (imageUrl || '').trim(),
+      finalPrice: finalPrice
+    });
+
+    res.redirect(`/?success=${encodeURIComponent('Cap nhat thong tin sach thanh cong!')}`);
+  } catch (err) {
+    console.error('Loi khi cap nhat du lieu len Write Connection:', err);
+    res.redirect(`/?error=${encodeURIComponent('Loi khi cap nhat thong tin sach.')}`);
+  }
+};
+
+// [POST/GET] /delete-book/:id - Xoa sach khoi CSDL Cloud (Routing den Write Connection: readwrite_23IT151)
+exports.deleteBook = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    // DIEU HUONG WRITE: Su dung BookWriteModel (readwrite_23IT151)
+    await BookWriteModel.findByIdAndDelete(id);
+
+    res.redirect(`/?success=${encodeURIComponent('Da xoa sach khoi CSDL Cloud thanh cong!')}`);
+  } catch (err) {
+    console.error('Loi khi xoa du lieu tu Write Connection:', err);
+    res.redirect(`/?error=${encodeURIComponent('Loi khi xoa sach khoi Cloud MongoDB Atlas.')}`);
+  }
+};
+

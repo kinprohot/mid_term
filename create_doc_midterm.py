@@ -112,7 +112,7 @@ def build_midterm_document():
 
     user_data = [
         ("read_23IT151", "pass123", "Read Only (read@DB_23IT151)", "Chỉ được phép thực thi các lệnh đọc (Query/Find) dữ liệu danh sách sách. Phục vụ các tính năng xem trang."),
-        ("readwrite_23IT151", "pass123", "Read-Write (readWrite@DB_23IT151)", "Có quyền Đọc và Ghi (Insert/Update/Delete). Phục vụ tính năng thêm mới sách và ghi dữ liệu Session tập trung.")
+        ("readwrite_23IT151", "pass123", "Read-Write (readWrite@DB_23IT151)", "Có toàn quyền Đọc, Thêm mới, Cập nhật (Sửa) và Xóa dữ liệu (CRUD). Đồng thời phục vụ việc ghi dữ liệu Session tập trung.")
     ]
 
     for uname, pwd, role, desc in user_data:
@@ -163,31 +163,32 @@ def build_midterm_document():
         "mid_term/\n"
         "├── config/          # Cấu hình đa luồng kết nối Mongoose (readConnection, writeConnection)\n"
         "├── models/          # Khai báo Schema (thêm trường imageUrl) và ràng buộc Model theo từng luồng kết nối\n"
-        "├── controllers/     # Xử lý logic nghiệp vụ, bộ lọc 151 và tính toán VAT 5%\n"
-        "├── routes/          # Khai báo định tuyến Express (GET /, POST /add-book)\n"
-        "├── views/           # Giao diện Handlebars (.hbs) tối giản không dùng icon, panel thêm sách bên phải\n"
+        "├── controllers/     # Xử lý logic nghiệp vụ, CRUD (Thêm, Sửa, Xóa), bộ lọc 151 và VAT 5%\n"
+        "├── routes/          # Khai báo định tuyến Express (GET /, POST /add-book, /update-book/:id, /delete-book/:id)\n"
+        "├── views/           # Giao diện Handlebars (.hbs) tối giản không dùng icon, thanh Session status bar 1 dòng, panel thêm sách bên phải\n"
         "├── .env             # Lưu trữ chuỗi kết nối bảo mật\n"
         "└── index.js         # File khởi chạy chính của hệ thống"
     )
     r_ms.font.name = "Consolas"
     r_ms.font.size = Pt(9.5)
 
-    doc.add_paragraph().add_run("2.2. Đa luồng kết nối phân quyền (Dual-Connection Routing):").bold = True
+    doc.add_paragraph().add_run("2.2. Đa luồng kết nối phân quyền & Xử lý CRUD (Dual-Connection Routing):").bold = True
     p_dual = doc.add_paragraph()
     p_dual.add_run(
         "Ứng dụng Node.js/Express khởi tạo 02 đối tượng kết nối Mongoose độc lập song song trong file config/database.js:\n"
         "• readConnection: Khởi tạo với MONGODB_READ_URI sử dụng tài khoản read_23IT151. Đăng ký BookReadModel trong models/book.model.js chuyên phụ trách các tác vụ truy vấn đọc (GET /).\n"
-        "• writeConnection: Khởi tạo với MONGODB_READWRITE_URI sử dụng tài khoản readwrite_23IT151. Đăng ký BookWriteModel chuyên phụ trách tác vụ ghi dữ liệu (POST /add-book) và lưu trữ Session tập trung."
+        "• writeConnection: Khởi tạo với MONGODB_READWRITE_URI sử dụng tài khoản readwrite_23IT151. Đăng ký BookWriteModel chuyên phụ trách toàn bộ các tác vụ ghi dữ liệu CRUD (Thêm mới POST /add-book, Cập nhật POST /update-book/:id, Xóa GET /delete-book/:id) và lưu trữ Session tập trung."
     )
 
     doc.add_paragraph().add_run("2.3. Kiến trúc Stateless Session lưu trữ tập trung trên Cloud:").bold = True
     p_stateless = doc.add_paragraph()
     p_stateless.add_run(
         "Để đảm bảo hệ thống hỗ trợ co giãn tự động (Auto-scaling / Stateless Architecture) trên các nền tảng Cloud PaaS, ứng dụng tuyệt đối KHÔNG lưu Session trong bộ nhớ RAM local. "
-        "Thông qua thư viện connect-mongo, toàn bộ thông tin phiên làm việc được tự động lưu trữ tập trung vào collection 'sessions' trong cơ sở dữ liệu DB_23IT151 trên MongoDB Atlas qua luồng kết nối writeConnection."
+        "Thông qua thư viện connect-mongo, toàn bộ thông tin phiên làm việc được tự động lưu trữ tập trung vào collection 'sessions' trong cơ sở dữ liệu DB_23IT151 trên MongoDB Atlas qua luồng kết nối writeConnection. "
+        "Giao diện hiển thị thanh Session Status Bar 1 dòng tinh gọn chứng minh tính năng với Giảng viên mà không gây rối giao diện."
     )
 
-    doc.add_paragraph().add_run("2.4. Thuật toán cá nhân hóa theo đề bài mới & Thiết kế giao diện:").bold = True
+    doc.add_paragraph().add_run("2.4. Thuật toán cá nhân hóa theo đề bài mới & Thiết kế giao diện CRUD:").bold = True
     p_algo = doc.add_paragraph()
     p_algo.add_run(
         "• Bộ lọc tiền tố mã sản phẩm: Mã sách bắt buộc phải có tiền tố là 3 số cuối của MSSV (151). Kiểm tra tại controllers/book.controller.js:\n"
@@ -195,10 +196,11 @@ def build_midterm_document():
         "  Nếu mã nhập sai tiền tố (như 999-BOOK), hệ thống từ chối xử lý và phát thông báo lỗi ngay lập tức.\n"
         "• Thuế suất VAT tính động: Thuế VAT được tính theo công thức mới VAT = (Chữ số cuối MSSV + 4)% = (1 + 4)% = 5%.\n"
         "  Giá sau thuế = Math.round(price * 1.05 * 100) / 100. Giá trị này được lưu xuống CSDL Cloud và render ra màn hình.\n"
-        "• Thiết kế giao diện hiện đại & Đơn giản (Không icon):\n"
+        "• Thiết kế giao diện hiện đại & Đơn giản (Không icon) kèm tính năng CRUD:\n"
         "  - Loại bỏ toàn bộ icon/emoji để giao diện gọn gàng, chuẩn chuyên nghiệp.\n"
-        "  - Thiết kế bố cục 2 cột dạng Flexbox: Danh sách sách & Trạng thái Session nằm bên TRÁI, Panel Thêm Sách nằm bên PHẢI.\n"
+        "  - Thiết kế bố cục 2 cột dạng Flexbox: Danh sách sách nằm bên TRÁI, Panel Thêm Sách nằm bên PHẢI.\n"
         "  - Hỗ trợ thêm trường Link Ảnh Sách (imageUrl) hiển thị thumbnail ảnh bìa sách trong bảng danh sách.\n"
+        "  - Thêm cột Hành Động với nút Sửa (Modal cập nhật) và nút Xóa thông tin sách qua tài khoản readwrite_23IT151.\n"
         "• Footer bắt buộc trên Handlebars: Ở cuối giao diện index.hbs có chứa dòng thông tin cố định:\n"
         "  Họ và tên: Nguyễn Hoàng Lực | MSSV: 23IT151 | Mức VAT áp dụng: 5%"
     )

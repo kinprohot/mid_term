@@ -7,17 +7,21 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body { background-color: #f4f7f6; color: #333; line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; }
-    header { background: #1b365d; color: white; padding: 25px 20px; text-align: center; border-bottom: 4px solid #0056b3; }
+    header { background: #1b365d; color: white; padding: 22px 20px; text-align: center; border-bottom: 4px solid #0056b3; }
     header h1 { font-size: 1.8rem; margin-bottom: 5px; font-weight: 700; }
     header p { font-size: 0.95rem; opacity: 0.9; }
     
-    .container { max-width: 1200px; margin: 25px auto; padding: 0 20px; flex: 1; width: 100%; }
+    .container { max-width: 1200px; margin: 20px auto; padding: 0 20px; flex: 1; width: 100%; }
     
+    /* Session Status Bar (Tinh gon Option B) */
+    .session-bar { background-color: #e9ecef; border: 1px solid #dee2e6; border-radius: 6px; padding: 10px 16px; margin-bottom: 20px; font-size: 0.88rem; color: #495057; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+    .session-bar code { background-color: white; padding: 2px 6px; border-radius: 4px; border: 1px solid #ced4da; font-family: monospace; color: #0d47a1; }
+
     .alert { padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-weight: 500; }
     .alert-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
     .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
 
-    /* Layout 2 cot: Trai = Danh sach sach & Session, Phai = Panel Them Sach */
+    /* Layout 2 cot: Trai = Danh sach sach, Phai = Panel Them Sach */
     .main-layout { display: flex; gap: 25px; align-items: flex-start; }
     .left-column { flex: 2; min-width: 0; }
     .right-column { flex: 1; min-width: 320px; position: sticky; top: 20px; }
@@ -28,7 +32,7 @@
     }
 
     .card { background: white; border-radius: 8px; padding: 22px; margin-bottom: 25px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #e2e8f0; }
-    .card h2 { color: #1b365d; margin-bottom: 15px; font-size: 1.25rem; border-bottom: 2px solid #eef2f5; padding-bottom: 8px; font-weight: 600; }
+    .card h2 { color: #1b365d; margin-bottom: 15px; font-size: 1.2rem; border-bottom: 2px solid #eef2f5; padding-bottom: 8px; font-weight: 600; }
 
     .form-group { display: flex; flex-direction: column; margin-bottom: 14px; }
     .form-group label { font-size: 0.88rem; font-weight: 600; margin-bottom: 5px; color: #495057; }
@@ -36,20 +40,35 @@
     .form-group input:focus { outline: none; border-color: #0056b3; box-shadow: 0 0 0 3px rgba(0,86,179,0.15); }
     .form-help { font-size: 0.78rem; color: #d9534f; margin-top: 4px; font-weight: 600; }
 
-    .btn { background-color: #0056b3; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-size: 1rem; font-weight: 600; width: 100%; margin-top: 10px; transition: background 0.2s; }
+    .btn { background-color: #0056b3; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-size: 0.95rem; font-weight: 600; width: 100%; margin-top: 10px; transition: background 0.2s; text-align: center; text-decoration: none; display: inline-block; }
     .btn:hover { background-color: #003d80; }
 
+    /* Action Buttons */
+    .btn-sm { padding: 5px 10px; font-size: 0.8rem; border-radius: 4px; border: none; cursor: pointer; text-decoration: none; font-weight: 600; display: inline-block; margin-right: 4px; }
+    .btn-edit { background-color: #ffc107; color: #212529; }
+    .btn-edit:hover { background-color: #e0a800; }
+    .btn-delete { background-color: #dc3545; color: white; }
+    .btn-delete:hover { background-color: #c82333; }
+    .btn-secondary { background-color: #6c757d; color: white; }
+    .btn-secondary:hover { background-color: #5a6268; }
+
     table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #eef2f5; vertical-align: middle; }
-    th { background-color: #f8f9fa; color: #1b365d; font-weight: 700; font-size: 0.88rem; }
+    th, td { padding: 10px 10px; text-align: left; border-bottom: 1px solid #eef2f5; vertical-align: middle; }
+    th { background-color: #f8f9fa; color: #1b365d; font-weight: 700; font-size: 0.85rem; }
     tr:hover { background-color: #f8f9fa; }
 
-    .book-cover { width: 50px; height: 65px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; background-color: #eee; }
-    .no-image { width: 50px; height: 65px; border-radius: 4px; border: 1px dashed #ccc; background-color: #f9f9f9; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; color: #888; text-align: center; }
+    .book-cover { width: 45px; height: 60px; object-fit: cover; border-radius: 4px; border: 1px solid #ddd; background-color: #eee; }
+    .no-image { width: 45px; height: 60px; border-radius: 4px; border: 1px dashed #ccc; background-color: #f9f9f9; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; color: #888; text-align: center; }
 
-    .badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; font-weight: 600; background-color: #e9ecef; color: #495057; }
+    .badge { display: inline-block; padding: 4px 8px; border-radius: 4px; font-size: 0.78rem; font-weight: 600; background-color: #e9ecef; color: #495057; }
     .badge-code { background-color: #e3f2fd; color: #0d47a1; font-family: monospace; }
     .badge-vat { background-color: #e8f5e9; color: #1b5e20; }
+
+    /* Modal Styling */
+    .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); justify-content: center; align-items: center; z-index: 1000; }
+    .modal-content { background: white; padding: 25px; border-radius: 8px; max-width: 500px; width: 90%; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+    .modal-header { font-size: 1.2rem; font-weight: 700; color: #1b365d; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
+    .modal-footer { display: flex; justify-content: flex-end; gap: 10px; margin-top: 15px; }
 
     footer { background-color: #1b365d; color: white; text-align: center; padding: 18px 20px; font-size: 0.95rem; margin-top: auto; border-top: 3px solid #0056b3; }
     footer p { margin: 3px 0; }
@@ -64,6 +83,12 @@
 
   <div class="container">
     
+    <!-- Session Status Bar (Tinh gon Option B) -->
+    <div class="session-bar">
+      <span><strong>Stateless Session (Cloud Storage):</strong> Collection <code>sessions</code> @ MongoDB Atlas (User: <code>readwrite_23IT151</code>)</span>
+      <span>Session ID: <code>{{sessionId}}</code> | <strong>Lượt xem:</strong> <span class="badge badge-code">{{viewsCount}} lượt</span></span>
+    </div>
+
     {{#if error}}
       <div class="alert alert-error">
         THÔNG BÁO LỖI: {{error}}
@@ -78,10 +103,8 @@
 
     <div class="main-layout">
       
-      <!-- CỘT BÊN TRÁI: DANH SÁCH SÁCH & TRẠNG THÁI SESSION -->
+      <!-- CỘT BÊN TRÁI: DANH SÁCH SÁCH -->
       <div class="left-column">
-        
-        <!-- Danh Sách Sách -->
         <div class="card">
           <h2>Danh Sách Sách Trong CSDL Cloud (Kết nối Read-Only User: read_23IT151)</h2>
           {{#if books.length}}
@@ -93,8 +116,9 @@
                   <th>Tên Sách</th>
                   <th>Tác Giả</th>
                   <th>Giá Gốc</th>
-                  <th>Thuế VAT</th>
+                  <th>VAT (5%)</th>
                   <th>Giá Sau Thuế</th>
+                  <th>Hành Động (Write User)</th>
                 </tr>
               </thead>
               <tbody>
@@ -102,7 +126,7 @@
                   <tr>
                     <td>
                       {{#if this.imageUrl}}
-                        <img src="{{this.imageUrl}}" alt="{{this.title}}" class="book-cover" onerror="this.onerror=null; this.src='https://via.placeholder.com/50x65?text=No+Img';">
+                        <img src="{{this.imageUrl}}" alt="{{this.title}}" class="book-cover" onerror="this.onerror=null; this.src='https://via.placeholder.com/45x60?text=No+Img';">
                       {{else}}
                         <div class="no-image">No Img</div>
                       {{/if}}
@@ -113,6 +137,10 @@
                     <td>${{this.price}}</td>
                     <td><span class="badge badge-vat">+{{this.vatRate}}%</span></td>
                     <td><strong>${{this.finalPrice}}</strong></td>
+                    <td>
+                      <button type="button" class="btn-sm btn-edit" onclick="openEditModal('{{this._id}}', '{{this.title}}', '{{this.author}}', '{{this.price}}', '{{this.imageUrl}}')">Sửa</button>
+                      <a href="/delete-book/{{this._id}}" class="btn-sm btn-delete" onclick="return confirm('Xác nhận xóa cuốn sách {{this.title}} khỏi CSDL Cloud (readwrite_23IT151)?')">Xóa</a>
+                    </td>
                   </tr>
                 {{/each}}
               </tbody>
@@ -121,15 +149,6 @@
             <p style="text-align: center; color: #6c757d; padding: 20px;">Chưa có dữ liệu sách nào trong database. Vui lòng thêm sách mới ở khung bên phải!</p>
           {{/if}}
         </div>
-
-        <!-- Thông tin Stateless Session -->
-        <div class="card" style="background-color: #f8f9fa;">
-          <h2>Trạng Thái Session Tập Trung Trên Cloud MongoDB Atlas (Stateless Architecture)</h2>
-          <p>• <strong>Session ID:</strong> <code>{{sessionId}}</code></p>
-          <p>• <strong>Số lượt xem trang (Page Views):</strong> <span class="badge" style="background-color: #0056b3; color: white;">{{viewsCount}} lượt</span></p>
-          <p style="font-size: 0.85rem; color: #6c757d; margin-top: 8px;">* Dữ liệu Session được lưu trữ trực tiếp tại MongoDB Atlas (Collection: <code>sessions</code>) thông qua kết nối Write User (<code>readwrite_23IT151</code>), đảm bảo ứng dụng hỗ trợ Auto-scaling không phụ thuộc RAM máy chủ.</p>
-        </div>
-
       </div>
 
       <!-- CỘT BÊN PHẢI: FORM THÊM SÁCH MỚI -->
@@ -173,10 +192,65 @@
 
   </div>
 
+  <!-- MODAL CẬP NHẬT SÁCH (READWRITE USER) -->
+  <div id="editModal" class="modal-overlay">
+    <div class="modal-content">
+      <div class="modal-header">Cập Nhật Thông Tin Sách (readwrite_23IT151)</div>
+      <form id="editForm" method="POST">
+        <div class="form-group">
+          <label for="editTitle">Tên Sách:</label>
+          <input type="text" id="editTitle" name="title" required>
+        </div>
+
+        <div class="form-group">
+          <label for="editAuthor">Tác Giả:</label>
+          <input type="text" id="editAuthor" name="author" required>
+        </div>
+
+        <div class="form-group">
+          <label for="editPrice">Giá Gốc ($):</label>
+          <input type="number" id="editPrice" name="price" step="0.01" min="0" required>
+        </div>
+
+        <div class="form-group">
+          <label for="editImageUrl">Link Ảnh Sách (URL):</label>
+          <input type="url" id="editImageUrl" name="imageUrl">
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn-sm btn-secondary" onclick="closeEditModal()">Hủy Bỏ</button>
+          <button type="submit" class="btn-sm btn-edit" style="padding: 8px 16px;">Lưu Thay Đổi</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <footer>
     <p><strong>Họ và tên: Nguyễn Hoàng Lực | MSSV: 23IT151 | Mức VAT áp dụng: {{vatPercent}}%</strong></p>
     <p style="font-size: 0.8rem; opacity: 0.8; margin-top: 4px;">Đề thi giữa kỳ môn Điện toán đám mây - Học viện VKU 2026</p>
   </footer>
+
+  <script>
+    function openEditModal(id, title, author, price, imageUrl) {
+      document.getElementById('editForm').action = '/update-book/' + id;
+      document.getElementById('editTitle').value = title;
+      document.getElementById('editAuthor').value = author;
+      document.getElementById('editPrice').value = price;
+      document.getElementById('editImageUrl').value = imageUrl || '';
+      document.getElementById('editModal').style.display = 'flex';
+    }
+
+    function closeEditModal() {
+      document.getElementById('editModal').style.display = 'none';
+    }
+
+    window.onclick = function(event) {
+      var modal = document.getElementById('editModal');
+      if (event.target == modal) {
+        modal.style.display = 'none';
+      }
+    }
+  </script>
 
 </body>
 </html>
