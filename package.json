@@ -1,0 +1,21 @@
+{
+  "name": "mid_term_23it151",
+  "version": "1.0.0",
+  "description": "Quản lý Sách Cloud MongoDB Atlas - Nguyễn Hoàng Lực 23IT151",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "keywords": [],
+  "author": "Nguyen Hoang Luc 23IT151",
+  "license": "ISC",
+  "dependencies": {
+    "connect-mongo": "^5.1.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-session": "^1.18.1",
+    "hbs": "^4.3.1",
+    "mongoose": "^8.9.3"
+  }
+}
